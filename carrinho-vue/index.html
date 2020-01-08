@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const produtosLista = [
+      {
+        id: 'abc123',
+        nome: 'JSRaiz para FW',
+        preco: 300,
+        descricao: 'O melhor curso do mundo',
+        imagem: 'https://lorempixel.com/500/300'
+      },
+      {
+        id: 'bbc123',
+        nome: 'JSRaiz para Node',
+        preco: 1200,
+        descricao: 'O melhor curso e todos',
+        imagem: 'https://lorempixel.com/500/300'
+      },
+      {
+        id: 'cbc123',
+        nome: 'Programação funcional com JS',
+        preco: 500,
+        descricao: 'O melhor funcional de todos',
+        imagem: 'https://lorempixel.com/500/300'
+      }
+    ];
+
+    const ListaProdutosComponent = {
+      template: (`
+        <div class="row loja">
+          <slot />
+        </div>
+      `)
+    };
+
+    const ProdutoComponent = {
+      props: ['item'],
+      methods: {
+        addItem(item) {
+          this.$emit('add-item', item)
+        }
+      },
+      template: `
+        <div class="col-sm-4 mb-3">
+          <div class="card loja__item">
+            <img :src="item.imagem" class="card-img-top" />
+            <div class="card-body">
+              <h5 class="card-title">{{item.nome}}</h5>
+              <small>R\${{item.preco}}</small>
+              <p class="card-text">{{item.descricao}}!</p>
+              <button
+                class="btn btn-primary"
+                v-on:click="addItem(item)"
+              >Adicionar</button>
+            </div>
+          </div>
+        </div>
+      `
+    };
+    
+    const CarrinhoComponent = {
+      props: ['itens'],
+      computed: {
+        total: function() {
+          return Object.keys(this.itens)
+                  .reduce((acc, prodId) => acc + (this.itens[prodId].preco * this.itens[prodId].quantidade), 0);
+        }
+      },
+      methods: {
+        remoteItem(itemId) {
+          this.$emit('remove-item', itemId);
+        }
+      },
+      template: `
+        <div class="carrinho">
+          <div class="carrinho__itens">
+            <div class="card carrinho__item" v-for="item in itens">
+              <div class="card-body">
+                <h5 class="card-title">{{ item.nome }}</h5>
+                <p class="card-text">Preço unidade: R\${{item.preco}} | Quantidade: {{ item.quantidade }}</p>
+                <p class="card-text">Valor: R\${{item.preco * item.quantidade}}</p>
+                <button @click="remoteItem(item.id)" class="btn btn-danger btn-sm">Remover</button>
+              </div>
+            </div>
+          </div>
+          <div class="carrinho__total mt-2 p-3">
+            <h6>Total: R$<strong>{{total}}</strong></h6>
+          </div>
+        </div>
+      `
+    };
+
+    new Vue({
+      el: '#app',
+      components: {
+        ListaProdutos: ListaProdutosComponent,
+        Produto: ProdutoComponent,
+        Carrinho: CarrinhoComponent
+      },
+      data: function() {
+        return {
+          produtos: produtosLista,
+          carrinhoItens: {}
+        }
+      },
+      methods: {
+        addItemCarrinho(item) {
+          const quantidade = this.carrinhoItens[item.id]
+            ? ++this.carrinhoItens[item.id].quantidade
+            : 1;
+
+          this.carrinhoItens = {
+            ...this.carrinhoItens,
+            [item.id]: {
+              ...item,
+              quantidade
+            }
+          }
+        },
+        remoteItemCarrinho(itemId) {
+          if (this.carrinhoItens[itemId].quantidade <= 1) {
+            delete this.carrinhoItens[itemId];
+          } else {
+            --this.carrinhoItens[itemId].quantidade;
+          }
+
+          this.carrinhoItens = {...this.carrinhoItens}
+        }
+      },
+      template: (`
+        <div class="container">
+          <h1>Carrinho vanilla!</h1>
+          <hr>
+          <div id="app" class="row">
+            <div class="col-sm-8">
+              <ListaProdutos>
+                <Produto
+                  v-for="produto in produtos"
+                  :item="produto"
+                  :key="produto.id"
+                  v-on:add-item="addItemCarrinho"
+                />
+              </ListaProdutos>
+            </div>
+            <div class="col-sm-4">
+              <Carrinho
+                :itens="carrinhoItens"
+                v-on:remove-item="remoteItemCarrinho"
+              />
+            </div>
+          </div>
+        </div>
+      `)
+    })
+  </script>
+</body>
+
+</html>
