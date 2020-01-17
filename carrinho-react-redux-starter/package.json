@@ -1,0 +1,30 @@
+{
+  "name": "carrinho-react",
+  "version": "1.0.0",
+  "description": "Carrinho em react",
+  "main": "index.js",
+  "scripts": {
+    "api": "nodemon ./back-end/bootstrap.js -w ./back-end",
+    "app": "webpack -w"
+  },
+  "author": "Ayrton teshim",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^2.0.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^18.4.0",
+    "faker": "^4.1.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
+  }
+}
