@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Carrinho React</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+
+<body>
+  <div class="container">
+    <h1>Carrinho React</h1>
+    <hr>
+    <div id="app" class="row">
+      <div class="col-sm-8">
+        <div class="row loja">
+          <!-- <div class="col-sm-4 mb-3">
+            <div class="card">
+              <div class="card loja__item">
+                <img class="card-img-top" src="https://lorempixel.com/500/300" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">JSRaiz para FW</h5>
+                  <small>R$300,00</small>
+                  <p class="card-text">O melhor curso do mundo</p>
+                  <button data-value="300" class="btn btn-primary">Adicionar</button>
+                </div>
+              </div>
+            </div>
+          </div>col-sm-4 -->
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="carrinho">
+          <div class="carrinho__itens">
+            <!-- <div class="card carrinho__item">
+              <div class="card-body">
+                <h5 class="card-title">JSRaiz para FW</h5>
+                <p class="card-text">Preço unidade: R$300,00 | Quantidade: 2</p>
+                <p class="card-text">Valor: R$600</p>
+                <button class="btn btn-danger btn-sm">Remover</button>
+              </div>
+            </div> -->
+          </div>
+          <div class="carrinho__total mt-2 p-3">
+            <!-- <h6>Total: <strong>R$600,00</strong></h6> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/redux@4.0.5/dist/redux.js"></script>
+  <script>
+    const produtos = [
+      {
+        id: 'abc123',
+        nome: 'JSRaiz para FW',
+        preco: 300,
+        descricao: 'O melhor curso do mundo',
+        imagem: 'https://lorempixel.com/500/300'
+      },
+      {
+        id: 'bbc123',
+        nome: 'JSRaiz para Node',
+        preco: 1200,
+        descricao: 'O melhor curso e todos',
+        imagem: 'https://lorempixel.com/500/300'
+      },
+      {
+        id: 'cbc123',
+        nome: 'Programação funcional com JS',
+        preco: 500,
+        descricao: 'O melhor funcional de todos',
+        imagem: 'https://lorempixel.com/500/300'
+      }
+    ];
+
+    function addItem (produto) {
+      return {
+        type: 'ADICIONA_ITEM',
+        payload: produto
+      }
+    }
+
+    function removeItem (produtoId) {
+      return {
+        type: 'REMOVE_ITEM',
+        payload: {
+          id: produtoId
+        }
+      }
+    }
+
+    function reducer(state = {}, action) {
+      switch (action.type) {
+        case 'ADICIONA_ITEM':
+          return {
+            ...state,
+            [action.payload.id]: {
+              ...action.payload,
+              quantidade: state[action.payload.id] ? state[action.payload.id].quantidade + 1 : 1
+            }
+          }
+        case 'REMOVE_ITEM':
+          return (state[action.payload.id].quantidade > 1)
+            ? {
+              ...state,
+              [action.payload.id]: {
+                ...state[action.payload.id],
+                quantidade: state[action.payload.id].quantidade - 1
+              }
+            }
+            : Object.keys(state).reduce(function(acc, produtoId) {
+                return {
+                  ...acc,
+                  ...( 
+                    produtoId === action.payload.id 
+                      ? {} 
+                      : { [produtoId]: state[produtoId] }
+                    )
+                }
+            }, {})
+
+        default:
+          return state;
+      }
+    }
+
+    const store = Redux.createStore(reducer);
+
+    store.subscribe(function() {
+      renderizaCarrinho();
+      renderCarrinhoTotal();
+    })
+
+    function renderizaProduto(produto, index) {
+      return `
+        <div class="col-sm-4 mb-3">
+          <div class="card">
+            <div class="card loja__item">
+              <img class="card-img-top" src="${produto.imagem}" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">${produto.nome}</h5>
+                  <small>R$${produto.preco}</small>
+                  <p class="card-text">${produto.descricao}</p>
+                  <button data-index="${index}" class="btn btn-primary btn-add">Adicionar</button>
+                </div>
+                </div>
+            </div>
+          </div>
+      `
+    }
+
+    function renderizaProdutos() {
+      let html = '';
+      for (let i = 0; i < produtos.length; i++) {
+        html = html + renderizaProduto(produtos[i], i);
+      }
+      return html;
+    }
+
+    function renderizaItemCarrinho(produtoCarrinho) {
+      return `
+        <div class="card carrinho__item">
+          <div class="card-body">
+            <h5 class="card-title">${produtoCarrinho.nome}</h5>
+            <p class="card-text">Preço unidade: R$${produtoCarrinho.preco} | Quantidade: ${produtoCarrinho.quantidade}</p>
+            <p class="card-text">Valor: R$${produtoCarrinho.preco * produtoCarrinho.quantidade}</p>
+            <button data-produto-id="${produtoCarrinho.id}" class="btn btn-danger btn-sm btn-remove">Remover</button>
+          </div>
+        </div>
+      `
+    }
+
+    function renderizaCarrinho() {
+      const carrinhoItens = store.getState();
+      let html = '';
+      for (let produtoId in carrinhoItens) {
+        html = html + renderizaItemCarrinho(carrinhoItens[produtoId]);
+      }
+
+      document.querySelector('.carrinho__itens').innerHTML = html;
+    }
+
+    function renderCarrinhoTotal() {
+      const carrinhoItens = store.getState();
+      let total = 0;
+
+      for (let produtoId in carrinhoItens) {
+        total = total + (carrinhoItens[produtoId].preco * carrinhoItens[produtoId].quantidade);
+      }
+
+      document.querySelector('.carrinho__total')
+        .innerHTML = `<h6>Total: <strong>R$${total}</strong></h6>`;
+    }
+
+    document.body
+      .addEventListener('click', function(event) {
+        const elemento = event.target;
+
+        if (elemento.classList.contains('btn-add')) {
+          const index = parseInt(elemento.getAttribute('data-index'), 10);
+          const produto = produtos[index];
+
+          store.dispatch(addItem(produto));
+        }
+
+        if (elemento.classList.contains('btn-remove')) {
+          const produtoId = elemento.getAttribute('data-produto-id');
+          store.dispatch(removeItem(produtoId));
+        }
+      });
+
+    document.querySelector('.loja').innerHTML = renderizaProdutos();
+
+  </script>
+</body>
+
+</html>
