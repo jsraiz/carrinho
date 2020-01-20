@@ -1,8 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { addItem } from './../actions';
 
-function ProdutoComponent(props) {
+export default function (props) {
   return (
     <div className="col-sm-4 mb-3">
       <div className="card loja__item">
@@ -17,16 +15,3 @@ function ProdutoComponent(props) {
     </div>
   )
 };
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onClick: function(item) {
-      dispatch(addItem(item))
-    }
-  }
-}
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(ProdutoComponent)
