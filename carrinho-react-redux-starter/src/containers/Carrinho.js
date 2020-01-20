@@ -3,7 +3,7 @@ import CarrinhoComponent from '../Components/Carrinho';
 import { removeItem } from '../actions';
 
 const mapStateToProps = state => ({
-  itens: state
+  itens: state.carrinhoItens
 });
 
 const mapDispatchToProps = dispatch => ({

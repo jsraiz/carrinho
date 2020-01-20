@@ -5,11 +5,9 @@ import { connect } from 'react-redux';
 import { addItem } from '../actions';
 import CardComponent from '../Components/Card';
 
-import produtosLista from '../data';
-
 const ListaProdutos = (props) => (
   <div className="row">
-    {produtosLista.map((produto, index) => (
+    {props.itens.map((produto, index) => (
       <CardComponent
         item={produto}
         onClick={props.onClick}
@@ -19,15 +17,17 @@ const ListaProdutos = (props) => (
   </div>
 );
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onClick: function(item) {
-      dispatch(addItem(item))
-    }
+const mapStateToProps = state => ({
+  itens: state.produtos
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  onClick: function(item) {
+    dispatch(addItem(item))
   }
-}
+})
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ListaProdutos);
