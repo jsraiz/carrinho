@@ -5,11 +5,11 @@ export function addItem (produto) {
   }
 }
 
-export function removeItem (produtoId) {
+export function removeItem (itemId) {
   return {
     type: 'REMOVE_ITEM',
     payload: {
-      id: produtoId
+      id: itemId
     }
   }
 }
