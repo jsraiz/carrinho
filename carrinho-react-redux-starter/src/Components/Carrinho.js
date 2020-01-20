@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 function valorTotal(carrinhoItens) {
   return Object.keys(carrinhoItens).reduce(function (acc, produtoId) {
@@ -7,7 +6,7 @@ function valorTotal(carrinhoItens) {
   }, 0);
 }
 
-function CarrinhoComponent(props) {
+export default function CarrinhoComponent(props) {
   return (
     <div className="carrinho">
       <div className="carrinho__itens">
@@ -30,11 +29,3 @@ function CarrinhoComponent(props) {
     </div>
   )
 }
-
-const mapStateToProps = function (state) {
-  return {
-    itens: state
-  }
-}
-
-export default connect(mapStateToProps)(CarrinhoComponent)

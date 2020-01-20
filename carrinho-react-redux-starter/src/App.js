@@ -2,7 +2,7 @@ import React from 'react';
 import produtosLista from './data';
 import ProdutoComponent from './Components/Produto';
 import ListaProdutosComponent from './Components/ListaProdutos';
-import CarrinhoComponent from './Components/Carrinho';
+import CarrinhoContainer from './containers/Carrinho';
 
 export default function AppComponent() {
   return (
@@ -18,7 +18,7 @@ export default function AppComponent() {
         </ListaProdutosComponent>
       </div>
       <div className="col-sm-4">
-        <CarrinhoComponent />
+        <CarrinhoContainer />
       </div>
     </React.Fragment>
   )
