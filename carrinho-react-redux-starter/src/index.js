@@ -2,21 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import AppComponent from './App'
 
-import { createStore, combineReducers } from 'redux';
+import { createStore } from 'redux';
 
 import { Provider } from 'react-redux';
 
-import carrinhoReducer from './reducers';
-import produtosMock from './data';
-
-const produtosReducer = function(state = produtosMock) {
-  return state;
-}
-
-const rootReducers = combineReducers({
-  produtos: produtosReducer,
-  carrinhoItens: carrinhoReducer
-})
+import rootReducers from './ducks';
 
 const store = createStore(
   rootReducers,

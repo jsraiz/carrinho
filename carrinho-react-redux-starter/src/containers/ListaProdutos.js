@@ -2,7 +2,9 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import { addItem } from '../actions';
+import { Creators as carrinhoCreators } from '../ducks/carrinho';
+import { Selectors as produtosSelector } from '../ducks/produtos';
+
 import CardComponent from '../Components/Card';
 
 const ListaProdutos = (props) => (
@@ -18,12 +20,12 @@ const ListaProdutos = (props) => (
 );
 
 const mapStateToProps = state => ({
-  itens: state.produtos
+  itens: produtosSelector.getProdutos(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
   onClick: function(item) {
-    dispatch(addItem(item))
+    dispatch(carrinhoCreators.addItem(item))
   }
 })
 
