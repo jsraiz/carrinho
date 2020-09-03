@@ -19,7 +19,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@hapi/hapi": "^18.4.0",
+    "@hapi/hapi": "^19.1.1",
     "faker": "^4.1.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
